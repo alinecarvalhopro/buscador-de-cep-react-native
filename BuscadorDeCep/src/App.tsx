@@ -1,12 +1,16 @@
 import React, {useState} from 'react';
 
 import {
+  SafeAreaView,
   View,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
+  TextInput,
+  Image,
+  Alert,
 } from 'react-native';
+import Api from './services/api';
 
 export default function App() {
   const [cep, setCep] = useState('');
@@ -15,11 +19,33 @@ export default function App() {
   const [localidade, setLocalidade] = useState('');
   const [uf, setUf] = useState('');
 
+  async function buscarCep() {
+    console.log("passou")
+    if (cep == '') {
+      Alert.alert('Cep inválido!');
+      setCep('');
+    }
+
+    try {
+      const response = await Api.get(`/${cep}/json/`);
+      setLogradouro(response.data.logradouro);
+      setBairro(response.data.bairro);
+      setLocalidade(response.data.localidade);
+      setUf(response.data.uf);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
-    <View style={styles.containerPrincipal}>
+    <SafeAreaView style={styles.containerPrincipal}>
       <View style={styles.topBar}>
         <Text style={styles.title}>Buscador de Cep</Text>
       </View>
+      <Image
+        style={{width: 150, height: 150, margin: 10, alignSelf: 'center'}}
+        source={require('./assets/img/local.png')}
+      />
       <View style={styles.containerBusca}>
         <TextInput
           style={{
@@ -29,33 +55,33 @@ export default function App() {
             paddingLeft: 20,
             borderWidth: 2,
             borderRadius: 5,
-            borderColor: '#000000',
+            borderColor: '#09021a',
             fontSize: 18,
           }}
           value={cep}
-          onChangeText={texto => setCep(texto)}
+          onChangeText={(texto) => setCep(texto)}
           placeholder="Cep"
         />
-        <TouchableOpacity style={styles.botaoBusca}>
+        <TouchableOpacity style={styles.botaoBusca} onPress={buscarCep}>
           <Text style={styles.textoBotaoBusca}>Buscar</Text>
         </TouchableOpacity>
       </View>
       <TextInput
         style={styles.caixaTexto}
         value={logradouro}
-        onChangeText={texto => setLogradouro(texto)}
+        onChangeText={(texto) => setLogradouro(texto)}
         placeholder="Logradouro"
       />
       <TextInput
         style={styles.caixaTexto}
         value={bairro}
-        onChangeText={texto => setBairro(texto)}
+        onChangeText={(texto) => setBairro(texto)}
         placeholder="Bairro"
       />
       <TextInput
         value={localidade}
         style={styles.caixaTexto}
-        onChangeText={texto => setLocalidade(texto)}
+        onChangeText={(texto) => setLocalidade(texto)}
         placeholder="Cidade"
       />
       <TextInput
@@ -67,14 +93,14 @@ export default function App() {
           paddingLeft: 20,
           borderWidth: 2,
           borderRadius: 5,
-          borderColor: '#000000',
+          borderColor: '#09021a',
           fontSize: 18,
         }}
         value={uf}
-        onChangeText={texto => setUf(texto)}
+        onChangeText={(texto) => setUf(texto)}
         placeholder="UF"
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -85,7 +111,7 @@ const styles = StyleSheet.create({
   },
   topBar: {
     height: 70,
-    backgroundColor: '#018786',
+    backgroundColor: '#00BFA6',
     flexDirection: 'row',
   },
   title: {
@@ -107,7 +133,7 @@ const styles = StyleSheet.create({
     marginEnd: 20,
     padding: 20,
     borderRadius: 5,
-    backgroundColor: '#018786',
+    backgroundColor: '#00BFA6',
   },
   textoBotaoBusca: {
     fontSize: 18,
@@ -121,7 +147,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderWidth: 2,
     borderRadius: 5,
-    borderColor: '#000000',
+    borderColor: '#09021a',
     fontSize: 18,
   },
 });
