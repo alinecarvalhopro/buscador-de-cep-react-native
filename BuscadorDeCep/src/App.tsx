@@ -5,29 +5,28 @@ import {
   View,
   StyleSheet,
   Text,
-  TouchableOpacity,
-  TextInput,
   Image,
   Alert,
+  TextInput,
+  TouchableOpacity,
 } from 'react-native';
-import Api from './services/api';
+import api from './services/api';
 
-export default function App() {
+const App = () => {
   const [cep, setCep] = useState('');
   const [logradouro, setLogradouro] = useState('');
   const [bairro, setBairro] = useState('');
   const [localidade, setLocalidade] = useState('');
   const [uf, setUf] = useState('');
 
-  async function buscarCep() {
-    console.log("passou")
+  const buscarCep = async () => {
     if (cep == '') {
       Alert.alert('Cep inválido!');
       setCep('');
     }
 
     try {
-      const response = await Api.get(`/${cep}/json/`);
+      const response = await api.get(`/${cep}/json/`);
       setLogradouro(response.data.logradouro);
       setBairro(response.data.bairro);
       setLocalidade(response.data.localidade);
@@ -37,21 +36,27 @@ export default function App() {
     }
   };
 
+  const limparBusca = () => {
+    setCep('');
+    setLogradouro('');
+    setBairro('');
+    setLocalidade('');
+    setUf('');
+  };
+
   return (
     <SafeAreaView style={styles.containerPrincipal}>
       <View style={styles.topBar}>
         <Text style={styles.title}>Buscador de Cep</Text>
       </View>
       <Image
-        style={{width: 150, height: 150, margin: 10, alignSelf: 'center'}}
+        style={{width: 135, height: 135, margin: 10, alignSelf: 'center'}}
         source={require('./assets/img/local.png')}
       />
       <View style={styles.containerBusca}>
         <TextInput
           style={{
             width: 200,
-            marginTop: 20,
-            marginEnd: 20,
             paddingLeft: 20,
             borderWidth: 2,
             borderRadius: 5,
@@ -59,7 +64,7 @@ export default function App() {
             fontSize: 18,
           }}
           value={cep}
-          onChangeText={(texto) => setCep(texto)}
+          onChangeText={texto => setCep(texto)}
           placeholder="Cep"
         />
         <TouchableOpacity style={styles.botaoBusca} onPress={buscarCep}>
@@ -69,24 +74,24 @@ export default function App() {
       <TextInput
         style={styles.caixaTexto}
         value={logradouro}
-        onChangeText={(texto) => setLogradouro(texto)}
+        onChangeText={texto => setLogradouro(texto)}
         placeholder="Logradouro"
       />
       <TextInput
         style={styles.caixaTexto}
         value={bairro}
-        onChangeText={(texto) => setBairro(texto)}
+        onChangeText={texto => setBairro(texto)}
         placeholder="Bairro"
       />
       <TextInput
         value={localidade}
         style={styles.caixaTexto}
-        onChangeText={(texto) => setLocalidade(texto)}
+        onChangeText={texto => setLocalidade(texto)}
         placeholder="Cidade"
       />
       <TextInput
         style={{
-          width: 80,
+          width: 100,
           marginTop: 10,
           marginHorizontal: 20,
           marginEnd: 20,
@@ -97,12 +102,26 @@ export default function App() {
           fontSize: 18,
         }}
         value={uf}
-        onChangeText={(texto) => setUf(texto)}
+        onChangeText={texto => setUf(texto)}
         placeholder="UF"
       />
+      <TouchableOpacity style={styles.botaoLimpar} onPress={limparBusca}>
+        <Text style={styles.textoBotaoBusca}>Limpar a busca</Text>
+      </TouchableOpacity>
+      <Text
+        style={{
+          color: '#D21A5C',
+          fontSize: 10,
+          textAlign: 'center',
+          marginTop: 20,
+        }}>
+        by Amie Aline
+      </Text>
     </SafeAreaView>
   );
-}
+};
+
+export default App;
 
 const styles = StyleSheet.create({
   containerPrincipal: {
@@ -113,6 +132,7 @@ const styles = StyleSheet.create({
     height: 70,
     backgroundColor: '#00BFA6',
     flexDirection: 'row',
+    justifyContent: 'center',
   },
   title: {
     margin: 20,
@@ -122,26 +142,27 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   containerBusca: {
-    height: 100,
+    height: 70,
     marginHorizontal: 20,
     flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   botaoBusca: {
-    width: 120,
-    height: 70,
-    marginTop: 30,
-    marginEnd: 20,
+    width: 135,
     padding: 20,
     borderRadius: 5,
     backgroundColor: '#00BFA6',
+
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   textoBotaoBusca: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#FFFFFF',
-    alignSelf: 'center',
   },
   caixaTexto: {
+    height: 55,
     marginTop: 10,
     marginHorizontal: 20,
     padding: 15,
@@ -149,5 +170,15 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: '#09021a',
     fontSize: 18,
+  },
+  botaoLimpar: {
+    height: 55,
+    marginTop: 10,
+    marginHorizontal: 20,
+    borderRadius: 5,
+    backgroundColor: '#D21A5C',
+
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
