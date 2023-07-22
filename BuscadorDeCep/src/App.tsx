@@ -110,12 +110,13 @@ const App = () => {
       </TouchableOpacity>
       <Text
         style={{
-          color: '#D21A5C',
-          fontSize: 10,
-          textAlign: 'center',
           marginTop: 20,
+          fontSize: 10,
+          fontWeight: '500',
+          textAlign: 'center',
+          color: '#D21A5C',
         }}>
-        by Amie Aline
+        by Amie Apps
       </Text>
     </SafeAreaView>
   );
